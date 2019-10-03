@@ -1,6 +1,14 @@
-const Booking = require('../models/Booking');
+const Booking = require("../models/Booking");
 
 module.exports = {
+  async index(req, res) {
+    const booking = await Booking.find();
+    //.populate("spot");
+    //.populate("user");
+
+    return res.json(booking);
+  },
+
   async store(req, res) {
     const { user_id } = req.headers;
     const { spot_id } = req.params;
@@ -9,10 +17,13 @@ module.exports = {
     const booking = await Booking.create({
       user: user_id,
       spot: spot_id,
-      date,
-    })
+      date
+    });
 
-    await booking.populate('spot').populate('user').execPopulate();
+    await booking
+      .populate("spot")
+      .populate("user")
+      .execPopulate();
     return res.json(booking);
   }
-}
+};
